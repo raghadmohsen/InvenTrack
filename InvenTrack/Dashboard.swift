@@ -25,28 +25,28 @@ struct Dashboard: View{
                     
                     HStack {
                         
-                        VStack(spacing: 10) {
-                            
-                            Text("In stock")
-                                .font(.system(size: 13))
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                            
-                            HStack {
-                                Text("9")
+                            VStack(spacing: 10) {
+                                
+                                Text("In stock")
+                                    .font(.system(size: 13))
                                     .fontWeight(.bold)
                                     .foregroundColor(.white)
                                 
-                                Text(Image(systemName: "circle.fill"))
-                                    .foregroundColor(.green)
-                                
-                                
-                                .padding(.leading) } }
-                        
-                        .frame(width: 80, height: 30)
-                        .padding(20)
-                        .background(Color.green1)
-                        .cornerRadius(15)
+                                HStack {
+                                    Text("9")
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.white)
+                                    
+                                    Text(Image(systemName: "circle.fill"))
+                                        .foregroundColor(.green)
+                                    
+                                    
+                                    .padding(.leading) } }
+                            
+                            .frame(width: 80, height: 30)
+                            .padding(20)
+                            .background(Color.green1)
+                            .cornerRadius(15)
                         
                         
                         VStack(spacing: 10) {
@@ -71,28 +71,29 @@ struct Dashboard: View{
                         .background(Color.orange1)
                         .cornerRadius(15)
                         
-                        
-                        VStack(spacing: 10) {
-                            
-                            Text("Out of stock")
-                                .font(.system(size: 13))
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                            
-                            HStack {
-                                Text("3")
+                        NavigationLink(destination: OutOfStocks()) {
+                            VStack(spacing: 10) {
+                                
+                                Text("Out of stock")
+                                    .font(.system(size: 13))
                                     .fontWeight(.bold)
                                     .foregroundColor(.white)
-                                Text(Image(systemName: "minus.circle.fill"))
-                                    .foregroundColor(.red)
                                 
-                                .padding(.leading) } }
-
-                        .frame(width: 80, height: 30)
-                        .padding(20)
-                        .background(Color.red1)
-                        .cornerRadius(15)
-                        
+                                HStack {
+                                    Text("3")
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.white)
+                                    Text(Image(systemName: "minus.circle.fill"))
+                                        .foregroundColor(.red)
+                                    
+                                    .padding(.leading) }
+                            }
+                            
+                            .frame(width: 80, height: 30)
+                            .padding(20)
+                            .background(Color.red1)
+                            .cornerRadius(15)
+                        }
                     }
                     //                    .padding()
                 }
@@ -157,8 +158,6 @@ struct itemcell: View {
         VStack {
             VStack(spacing: 20) {
                     HStack {
-                        // عرض الصورة الفريدة لكل منتج
-                       
                         
                         VStack(alignment: .leading) {
                             Text(items.Name)

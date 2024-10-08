@@ -53,3 +53,30 @@ struct OutOfStocks: View {
     
 }
 
+struct itemCell: View {
+    let items: DataItem
+    var body: some View {
+ 
+        VStack {
+            VStack(spacing: 20) {
+                        VStack(alignment: .leading) {
+                            Text(items.Name)
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
+                                .padding(.bottom, 1)
+                            
+                            Text("Quantity: \(items.Quantity)")
+                                .font(.footnote)
+                                .foregroundColor(.secondary)
+                        }
+                    
+                .padding()
+                //.background(Color.gray.opacity(0.1))
+                .frame(width: 370)
+                .cornerRadius(30)
+            }
+        }
+    }
+}
+
