@@ -19,62 +19,47 @@ struct InStocks: View {
                     let outOfStockItems = dataitem.filter { $0.Quantity > $0.MinQuantity }
                     
                     ForEach(outOfStockItems) { item in
-                        itemell(items: item)
+                        itemcell(items: item)
                     }
-                    .listRowBackground(
-                        Capsule()
-                            .fill(Color.gray.opacity(0.1))
-                            .padding(.horizontal, 7)
-                    )
+                    .padding(.horizontal)
                 }
             }
             .navigationTitle("In Stock")
         }
     }
     
-    struct ItemCell: View {
+    struct itemcell: View {
         let items: DataItem
-        
         var body: some View {
-            VStack(alignment: .leading) {
-                Text(items.Name)
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(.primary)
-                    .padding(.bottom, 1)
-                
-                Text("Quantity: \(items.Quantity)")
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
-            }
-            .padding()
-        }
-    }
-    
-}
-
-struct itemell: View {
-    let items: DataItem
-    var body: some View {
- 
-        VStack {
-            VStack(spacing: 20) {
-                        VStack(alignment: .leading) {
-                            Text(items.Name)
-                                .font(.title3)
-                                .fontWeight(.bold)
-                                .foregroundColor(.primary)
-                                .padding(.bottom, 1)
+     
+            VStack {
+                VStack(spacing: 20) {
+                        HStack {
                             
-                            Text("Quantity: \(items.Quantity)")
-                                .font(.footnote)
-                                .foregroundColor(.secondary)
-                        }
-                    
-                .padding()
-                //.background(Color.gray.opacity(0.1))
-                .frame(width: 370)
-                .cornerRadius(30)
+                            VStack(alignment: .leading) {
+                                Text(items.Name)
+                                    .font(.system(size: 17))
+                                    .fontWeight(.bold)
+                                    .padding(.bottom, 0.25)
+                                    .foregroundColor(.black)
+                                Text(items.Desc)
+                                    .font(.system(size: 14))
+                                    .padding(.bottom, 0.25)
+                                    .foregroundColor(.dgray)
+                                Text("Quantity: \(items.Quantity)")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.dgray)
+                            }
+                            
+                            Spacer()
+                            
+                        
+                    }
+                    .padding()
+                    //.background(Color.gray.opacity(0.1))
+                    .frame(width: 370)
+                    .cornerRadius(30)
+                }
             }
         }
     }

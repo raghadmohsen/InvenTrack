@@ -21,11 +21,8 @@ struct OutOfStocks: View {
                     ForEach(outOfStockItems) { item in
                         ItemCell(items: item)
                     }
-                    .listRowBackground(
-                        Capsule()
-                            .fill(Color.gray.opacity(0.1))
-                            .padding(.horizontal, 7)
-                    )
+                    .padding(.horizontal)
+                    
                 }
             }
             .navigationTitle("Out of Stock Items")
