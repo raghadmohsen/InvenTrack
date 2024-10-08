@@ -1,67 +1,26 @@
 //
-//  Dashboard.swift
+//  Dashbourd.swift
 //  InvenTrack
 //
-//  Created by Reef Saeed on 06/10/2024.
+//  Created by Raghad on 08/10/2024.
 //
 
 import SwiftUI
-fileprivate struct Item: Identifiable {
-    var id: UUID = UUID()
-    var name: String // Changed from title to name
-}
+import SwiftData
+
 struct Dashboard: View {
-    @State fileprivate var list: [Item] = [
-        Item(name: "View all"),
-        Item(name: "Mac"),
-        Item(name: "iPhone"),
-        Item(name: "iPad"),
-        Item(name: "Apple Watch"),
-        Item(name: "Accessories"),
-        // Add more names as needed
-    ]
-    @State fileprivate var dataID: Item.ID?
     
-    @State var products = [
-        Product(name: "MacBook Air", description: "MacBookAir15, M3", quantity: 20, imageName: "imv"),
-        Product(name: "iPhone 16 Pro max", description: "Natural titanum, 256GB", quantity: 70, imageName: "iph"),
-        Product(name: "iPad Pro", description: "iPad Pro 11inch WI-FI", quantity: 50, imageName: "ipd"),
-        Product(name: "Apple AirPods", description: "Apple AirPods wirless bluetooth", quantity: 54, imageName: "air"),
-        Product(name: "AirPods Max", description: "Professional-level active noise cancellation", quantity: 67, imageName: "head"),
-        Product(name: "Apple Pencil", description: "Be creative by Apple pencil", quantity: 73, imageName: "pnc"),
-        Product(name: "Apple Watch", description: "Apple Watch is the ultimate device for a healthy life", quantity: 94, imageName: "wch"),
-    ]
-    struct Product: Identifiable {
-        var id = UUID()
-        var name: String
-        var description: String
-        var quantity: Int
-        var imageName: String
-        
-    }
-    
+   
+    @Query(sort: \DataItem.id) var dataitem: [DataItem]
+    @Environment(\.modelContext) private var Context
+    @State private var isShowingItemSheet = false
+    @State private var itemToEdit: DataItem?
     
     
     var body: some View {
-        VStack(spacing : -200) {
-                
+        NavigationStack{
+            
                 VStack {
-                    HStack {
-                        //                    Spacer(minLength: 0)
-                        Text("Dashboard")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                            .foregroundColor(.black)
-                        
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
-                        
-                        
-                            Text(Image(systemName: "plus.circle"))
-                                .font(.title)
-                                .padding()
-                            .foregroundColor(.blue)
-                    }
                     
                     HStack {
                         
@@ -134,93 +93,305 @@ struct Dashboard: View {
                         .cornerRadius(15)
                         
                     }
-//                    .padding()
+                    //                    .padding()
                 }
-            
-            
-            ScrollView(.horizontal) {
-                LazyHStack(spacing: 10) {
-                    ForEach(list) { item in
-                        let isSelected = item.id == dataID
-                        Text(item.name) // Changed item.title to item.name
-                            .padding(.all, 8)
-                            .background(RoundedRectangle(cornerRadius: 8.0)
-                                .fill(isSelected ? Color.gray : Color.gray1) // Adjust color as needed
-                            )
-                            .frame(maxWidth: .infinity)
-                            .onTapGesture {
-                                withAnimation {
-                                    dataID = item.id
+ 
+                
+                
+            ScrollView{
+                List{
+                    Section{
+                        ForEach(dataitem) { item in
+                            itemcell(items: item)
+                                .onTapGesture {
+                                    itemToEdit = item
                                 }
-                            }
-                            .accessibilityLabel(item.name) // Updated accessibility label
-                    }
-                }
-                .scrollTargetLayout()
-            }
-            .padding(.all, 10)
-            .scrollIndicators(.hidden)
-            .onAppear {
-                dataID = list.first?.id // Optional: Safely set the initial selection
-            }
-            
-            
-            ScrollView {
-                VStack(spacing: 20) {
-                    ForEach(products){ product in
-                        HStack {
-                            // عرض الصورة الفريدة لكل منتج
-                            Image(product.imageName)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 80, height: 80)
-                                .cornerRadius(20)
-                                .clipped() // قص الصورة لتناسب الإطار
-                                .padding(.trailing, 10) // إضافة مسافة بين الصورة والنص
-                                .cornerRadius(3)
-                            
-                            VStack(alignment: .leading) {
-                                Text(product.name)
-                                    .font(.system(size: 17))
-                                    .fontWeight(.bold)
-                                    .padding(.bottom, 0.25)
-                                    .foregroundColor(.black)
-                                Text(product.description)
-                                    .font(.system(size: 14))
-                                    .padding(.bottom, 0.25)
-                                    .foregroundColor(.dgray)
-                                Text("Quantity: \(product.quantity)")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.dgray)
-                            }
-                            /*.padding(.vertical)*/ // إضافة مسافة رأسية
-                            
-                            Spacer()
-                            
-                            // ثلاث نقاط (المزيد) داخل المستطيل
-                            
                         }
-                        /*.padding(.trailing)*/ // إضافة مسافة من اليمين
-//                        .padding(.vertical)
+                        
+                        .onDelete{indexSet in
+                            for index in indexSet {
+                                Context.delete(dataitem[index])
+                            }
+                        }
                     }
-                    .padding() // إضافة مسافة داخل المستطيل
-                    .background(Color.gray.opacity(0.1))
-                    .frame(width: 370, height: 100)
-                    // خلفية للمستطيل
-                    .cornerRadius(25) // جعل حواف المستطيل مستديرة
+                    .background(Color(.systemGroupedBackground))
+                    .padding()
                 }
             }
-            //        .padding()
+
+            .navigationTitle("Dashboard")
+            .navigationBarTitleDisplayMode(.large)
+            .sheet(isPresented: $isShowingItemSheet){NewItem()}
+            .toolbar{
+                ToolbarItemGroup(placement: .topBarTrailing){
+                    Button(action:{isShowingItemSheet=true}) {
+                        Image(systemName: "plus.circle")
+                            .padding(.top,30)
+                    }
+                }
+                
+            }
+            .overlay{
+                if dataitem.isEmpty {
+                    ContentUnavailableView(label: {Label("NO ITEMS", systemImage: "exclamationmark.triangle")
+                    },description:{
+                        Text("No items available. Please add some items.")
+                    },actions: {
+                        Button("Add Item") {
+                            isShowingItemSheet=true
+                        }
+                    })
+                    .offset(y: -60)
+                }
+            }
             
-            
+        }//nav
+        
+    }//body
+}// main struct
+    
+    
+struct itemcell: View {
+    let items: DataItem
+    var body: some View {
+ 
+        VStack {
+            VStack(spacing: 20) {
+                    HStack {
+                        // عرض الصورة الفريدة لكل منتج
+                       
+                        
+                        VStack(alignment: .leading) {
+                            Text(items.Name)
+                                .font(.system(size: 17))
+                                .fontWeight(.bold)
+                                .padding(.bottom, 0.25)
+                                .foregroundColor(.black)
+                            Text(items.Desc)
+                                .font(.system(size: 14))
+                                .padding(.bottom, 0.25)
+                                .foregroundColor(.dgray)
+                            Text("Quantity: \(items.Quantity)")
+                                .font(.system(size: 14))
+                                .foregroundColor(.dgray)
+                        }
+                        
+                        Spacer()
+                        
+                    
+                }
+                .padding()
+                .background(Color.gray.opacity(0.1))
+                .frame(width: 370, height: 100)
+                .cornerRadius(25)
+            }
         }
-        
-        
-        
     }
 }
-        
+    
+
+
+
+
 
 #Preview {
     Dashboard()
 }
+
+
+struct NewItem: View {
+    //access the database
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) private var Context
+    @Query private var items: [DataItem]
+    //@Query private var items: [DataItem]
+    
+    // State variables to hold the data entered by the user
+    @State private var name: String = ""
+    @State private var category: String = ""
+    @State private var quantity: Int = 0
+    @State private var minQuantity: Int = 0
+    @State private var desc : String = ""
+
+    var body: some View {
+        NavigationStack {
+                
+            
+            VStack {
+                VStack{
+                    // TextField for Name
+                    TextField("Name", text: $name)
+                        .padding()
+                        .background(Color.gray.opacity(0.15))
+                        .cornerRadius(15)
+                        .padding(.horizontal)
+                    
+                    //TextField for Description
+                    TextField("Description", text: $desc)
+                        .padding()
+                        .background(Color.gray.opacity(0.15))
+                        .cornerRadius(15)
+                        .padding(.horizontal)
+                    
+                    
+                    // TextField for Category
+                    TextField("Category", text: $category)
+                        .padding()
+                        .background(Color.gray.opacity(0.15))
+                        .cornerRadius(15)
+                        .padding(.horizontal)
+                    
+                    // Quantity controls
+                    HStack {
+                        
+                        
+                        VStack/*(spacing:-13)*/ {
+                            
+                            Text("Quantitie")// Misspelled as per the image
+                                .foregroundColor(Color.black.opacity(0.75))
+                                .font(.caption)
+                                .cornerRadius(15)
+                                .padding(.horizontal,10)
+                                .padding(.top, 10)
+                                .frame(width: 155, height: 20,alignment: .leading)
+                            
+                            HStack {
+                                ZStack {
+                                    
+                                    Color.gray.opacity(0.15)
+                                        .frame(width: 148, height: 55)
+                                        .cornerRadius(15)
+                                        .padding(.horizontal)
+                                    
+                                    HStack {
+                                        
+                                        
+                                        Button(action: {
+                                            if quantity > 0 {
+                                                quantity -= 1
+                                            }
+                                        }) {
+                                            Image(systemName: "minus")
+                                                .foregroundColor(Color.black)
+                                                .padding(.leading)
+                                                .padding(10)
+                                            
+                                        }
+                                        
+                                        TextField("0", value: $quantity, formatter: NumberFormatter())
+                                            .padding(1)
+                                            .multilineTextAlignment(.center)
+                                            .keyboardType(.numberPad)
+                                            .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification)) { _ in
+                                                if let text = quantity.description as String?, let number = Int(text) {
+                                                    quantity = number
+                                                } else {
+                                                    quantity = 0 // or handle invalid input differently
+                                                }
+                                            }
+                                        //                                        Text("\(quantity)")
+                                        Button(action: {
+                                            quantity += 1
+                                        }) {
+                                            Image(systemName: "plus")
+                                                .foregroundColor(Color.black)
+                                                .padding(.trailing)
+                                                .padding(10)
+                                            
+                                            
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        Spacer()
+                        
+                        VStack {
+                            Text("Minimun quantitie")
+                                .foregroundColor(Color.black.opacity(0.75))
+                                .font(.caption)
+                                .cornerRadius(15)
+                                .padding(.horizontal,10)
+                                .padding(.top, 10)
+                                .frame(width: 155, height: 20,alignment: .leading)
+                            
+                            ZStack {
+                                Color.gray.opacity(0.15)
+                                    .frame(width: 148, height: 55)
+                                    .cornerRadius(15)
+                                    .padding(.horizontal)
+                                
+                                HStack {
+                                    Button(action: {
+                                        if minQuantity > 0 {
+                                            minQuantity -= 1
+                                        }
+                                    }) {
+                                        Image(systemName: "minus")
+                                            .foregroundColor(Color.black)
+                                            .padding(.leading)
+                                            .padding(10)
+                                        
+                                    }
+                                    
+                                    TextField("0", value: $minQuantity, formatter: NumberFormatter())
+                                        .padding(1)
+                                        .multilineTextAlignment(.center)
+                                        .keyboardType(.numberPad)
+                                        .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification)) { _ in
+                                            if let text = minQuantity.description as String?, let number = Int(text) {
+                                                minQuantity = number
+                                            } else {
+                                                quantity = 0 // or handle invalid input differently
+                                            }
+                                        }
+                                    
+                                    //Text("\(minQuantity)")
+                                    Button(action: {
+                                        minQuantity += 1
+                                    }) {
+                                        Image(systemName: "plus")
+                                            .foregroundColor(Color.black)
+                                            .padding(.trailing)
+                                            .padding(10)
+                                        
+                                    }
+                                }
+                                
+                            }
+                        }
+                        
+                    }
+                    Spacer()
+                    
+                    // Add Button
+                    Button(action: {
+                        // Handle add action
+                        let item = DataItem(Name: name,Desc: desc ,Category: category, Quantity: quantity, Minquantity: minQuantity)
+                        Context.insert(item)
+                        dismiss()
+                        
+                    }) {
+                        Text("Add")
+                            .padding()
+                            .frame(width: 155, height: 48)
+                            .background(Color.gray.opacity(0.15))
+                            .cornerRadius(15)
+                            .padding(.bottom)
+                    }
+                }
+                    .padding()
+                }//input vstack end
+            .navigationTitle("New Item")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar{
+                ToolbarItemGroup(placement: .topBarTrailing){
+                    Button("Cancel"){dismiss()}
+                        .padding(.top)
+                        .padding(.horizontal)
+                }
+            }//tool bar
+        }
+    }//body
+}//main sruct

@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct InvenTrackApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+         
+            Dashboard()
+            
         }
+    .modelContainer(for: [DataItem.self])
     }
 }
