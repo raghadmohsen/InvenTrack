@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 struct Dashboard: View {
     
@@ -98,25 +99,23 @@ struct Dashboard: View {
  
                 
                 
-            ScrollView{
-                List{
-                    Section{
-                        ForEach(dataitem) { item in
-                            itemcell(items: item)
-                                .onTapGesture {
-                                    itemToEdit = item
-                                }
+            List{
+                Section{
+                    ForEach(dataitem) { item in
+                        itemcell(items: item)
+                            .onTapGesture {
+                                itemToEdit = item
+                            }
+                    }
+                    
+                    .onDelete{indexSet in
+                        for index in indexSet {
+                            Context.delete(dataitem[index])
                         }
                         
-                        .onDelete{indexSet in
-                            for index in indexSet {
-                                Context.delete(dataitem[index])
-                            }
-                        }
                     }
-                    .background(Color(.systemGroupedBackground))
-                    .padding()
                 }
+                .padding(.horizontal)
             }
 
             .navigationTitle("Dashboard")
@@ -181,9 +180,9 @@ struct itemcell: View {
                     
                 }
                 .padding()
-                .background(Color.gray.opacity(0.1))
-                .frame(width: 370, height: 100)
-                .cornerRadius(25)
+                //.background(Color.gray.opacity(0.1))
+                .frame(width: 370)
+                .cornerRadius(30)
             }
         }
     }
