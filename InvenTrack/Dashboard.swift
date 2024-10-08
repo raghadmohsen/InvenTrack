@@ -24,7 +24,8 @@ struct Dashboard: View{
                 VStack {
                     
                     HStack {
-                        
+                        NavigationLink(destination: InStocks()) {
+                            
                             VStack(spacing: 10) {
                                 
                                 Text("In stock")
@@ -47,7 +48,7 @@ struct Dashboard: View{
                             .padding(20)
                             .background(Color.green1)
                             .cornerRadius(15)
-                        
+                        }
                         
                         VStack(spacing: 10) {
                             
