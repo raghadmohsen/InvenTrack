@@ -49,29 +49,29 @@ struct Dashboard: View{
                             .background(Color.green1)
                             .cornerRadius(15)
                         }
-                        
-                        VStack(spacing: 10) {
-                            
-                            Text("Low stock")
-                                .font(.system(size: 13))
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                            
-                            HStack {
-                                Text("5")
+                        NavigationLink(destination: LowStocks()) {
+                            VStack(spacing: 10) {
+                                
+                                Text("Low stock")
+                                    .font(.system(size: 13))
                                     .fontWeight(.bold)
                                     .foregroundColor(.white)
                                 
-                                Text(Image(systemName: "circle.lefthalf.filled"))
-                                    .foregroundColor(.orange)
-                                
-                                .padding(.leading) } }
-
-                        .frame(width: 80, height: 30)
-                        .padding(20)
-                        .background(Color.orange1)
-                        .cornerRadius(15)
-                        
+                                HStack {
+                                    Text("5")
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.white)
+                                    
+                                    Text(Image(systemName: "circle.lefthalf.filled"))
+                                        .foregroundColor(.orange)
+                                    
+                                    .padding(.leading) } }
+                            
+                            .frame(width: 80, height: 30)
+                            .padding(20)
+                            .background(Color.orange1)
+                            .cornerRadius(15)
+                        }
                         NavigationLink(destination: OutOfStocks()) {
                             VStack(spacing: 10) {
                                 
