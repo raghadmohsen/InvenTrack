@@ -137,9 +137,9 @@ struct Dashboard: View{
             //{
 //
 //                updateItem(dismiss:DataItem(backingData: selectedItem as! BackingData) , editdata: DataItem(backingData: selectedItem as! BackingData))
-//                
-//                
-//                
+//
+//
+//
 //            }
             .toolbar{
                 ToolbarItemGroup(placement: .topBarTrailing){
@@ -596,4 +596,3 @@ struct NewItem: View {
         }
     }//body
 }//main sruct
-

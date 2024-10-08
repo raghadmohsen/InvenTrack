@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
     
-@Model class DI {
+@Model class DataItem {
     
     @Attribute(.unique) var id : String
     var Name : String
@@ -16,7 +16,9 @@ import SwiftData
     var Category : String
     var Quantity : Int
     var MinQuantity : Int
-    
+    var InStock: Int?
+    var LowStock: Int?
+    var OutOfStock: Int?
    
     //to pass in the name
     init(Name: String ,Desc: String, Category : String , Quantity : Int , Minquantity : Int) {
