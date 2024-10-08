@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
     
-@Model class DataItem {
+@Model class DI {
     
     @Attribute(.unique) var id : String
     var Name : String

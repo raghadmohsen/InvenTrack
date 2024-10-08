@@ -1,4 +1,11 @@
 //
+//  Dashboard.swift
+//  InvenTrack
+//
+//  Created by Raghad on 08/10/2024.
+//
+
+//
 //  Dashbourd.swift
 //  InvenTrack
 //
@@ -15,10 +22,10 @@ struct Dashboard: View{
     @Query(sort: \DataItem.id) var dataitem: [DataItem]
     @Environment(\.modelContext) private var Context
     @State private var isShowingItemSheet = false
-    @State private var itemToEdit: DataItem?
-    
-    
+    @State private var itemsToEdit : DataItem?
     var body: some View {
+        
+        
         NavigationStack{
             
                 VStack {
@@ -106,7 +113,7 @@ struct Dashboard: View{
                     ForEach(dataitem) { item in
                         itemcell(items: item)
                             .onTapGesture {
-                                itemToEdit = item
+                                itemsToEdit = item
                             }
                     }
                     
@@ -123,6 +130,17 @@ struct Dashboard: View{
             .navigationTitle("Dashboard")
             .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $isShowingItemSheet){NewItem()}
+            .sheet(item: $itemsToEdit){item in
+                updateItem(editdata:item)
+                
+            }
+            //{
+//
+//                updateItem(dismiss:DataItem(backingData: selectedItem as! BackingData) , editdata: DataItem(backingData: selectedItem as! BackingData))
+//                
+//                
+//                
+//            }
             .toolbar{
                 ToolbarItemGroup(placement: .topBarTrailing){
                     Button(action:{isShowingItemSheet=true}) {
@@ -189,15 +207,199 @@ struct itemcell: View {
 }
     
 
-
-
-
-
 #Preview {
     Dashboard()
 }
 
-
+struct updateItem : View{
+    //access the database
+    
+    @Bindable var editdata: DataItem
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.modelContext) private var Context
+    var body: some View {
+        NavigationStack {
+            VStack {
+                VStack{
+                    // TextField for Name
+                    TextField("Name", text: $editdata.Name)
+                        .padding()
+                        .background(Color.gray.opacity(0.15))
+                        .cornerRadius(15)
+                        .padding(.horizontal)
+                    
+                    //TextField for Description
+                    TextField("Description", text: $editdata.Desc)
+                        .padding()
+                        .background(Color.gray.opacity(0.15))
+                        .cornerRadius(15)
+                        .padding(.horizontal)
+                    
+                    
+                    // TextField for Category
+                    TextField("Category", text: $editdata.Category)
+                        .padding()
+                        .background(Color.gray.opacity(0.15))
+                        .cornerRadius(15)
+                        .padding(.horizontal)
+                    
+                    // Quantity controls
+                    HStack {
+                        
+                        
+                        VStack/*(spacing:-13)*/ {
+                            
+                            Text("Quantitie")// Misspelled as per the image
+                                .foregroundColor(Color.black.opacity(0.75))
+                                .font(.caption)
+                                .cornerRadius(15)
+                                .padding(.horizontal,10)
+                                .padding(.top, 10)
+                                .frame(width: 155, height: 20,alignment: .leading)
+                            
+                            HStack {
+                                ZStack {
+                                    
+                                    Color.gray.opacity(0.15)
+                                        .frame(width: 148, height: 55)
+                                        .cornerRadius(15)
+                                        .padding(.horizontal)
+                                    
+                                    HStack {
+                                        
+                                        
+                                        Button(action: {
+                                            if editdata.Quantity > 0 {
+                                                editdata.Quantity -= 1
+                                            }
+                                        }) {
+                                            Image(systemName: "minus")
+                                                .foregroundColor(Color.black)
+                                                .padding(.leading)
+                                                .padding(10)
+                                            
+                                        }
+                                        
+                                        TextField("0", value: $editdata.Quantity, formatter: NumberFormatter())
+                                            .padding(1)
+                                            .multilineTextAlignment(.center)
+                                            .keyboardType(.numberPad)
+                                            .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification)) { _ in
+                                                if let text = editdata.Quantity.description as String?, let number = Int(text) {
+                                                    editdata.Quantity = number
+                                                } else {
+                                                    editdata.Quantity = 0 // or handle invalid input differently
+                                                }
+                                            }
+                                        //                                        Text("\(quantity)")
+                                        Button(action: {
+                                            editdata.Quantity += 1
+                                        }) {
+                                            Image(systemName: "plus")
+                                                .foregroundColor(Color.black)
+                                                .padding(.trailing)
+                                                .padding(10)
+                                            
+                                            
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        Spacer()
+                        
+                        VStack {
+                            Text("Minimun quantitie")
+                                .foregroundColor(Color.black.opacity(0.75))
+                                .font(.caption)
+                                .cornerRadius(15)
+                                .padding(.horizontal,10)
+                                .padding(.top, 10)
+                                .frame(width: 155, height: 20,alignment: .leading)
+                            
+                            ZStack {
+                                Color.gray.opacity(0.15)
+                                    .frame(width: 148, height: 55)
+                                    .cornerRadius(15)
+                                    .padding(.horizontal)
+                                
+                                HStack {
+                                    Button(action: {
+                                        if editdata.MinQuantity > 0 {
+                                            editdata.MinQuantity -= 1
+                                        }
+                                    }) {
+                                        Image(systemName: "minus")
+                                            .foregroundColor(Color.black)
+                                            .padding(.leading)
+                                            .padding(10)
+                                        
+                                    }
+                                    
+                                    TextField("0", value: $editdata.MinQuantity, formatter: NumberFormatter())
+                                        .padding(1)
+                                        .multilineTextAlignment(.center)
+                                        .keyboardType(.numberPad)
+                                        .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification)) { _ in
+                                            if let text = editdata.MinQuantity.description as String?, let number = Int(text) {
+                                                editdata.MinQuantity = number
+                                            } else {
+                                                editdata.Quantity = 0 // or handle invalid input differently
+                                            }
+                                        }
+                                    
+                                    //Text("\(minQuantity)")
+                                    Button(action: {
+                                        editdata.MinQuantity += 1
+                                    }) {
+                                        Image(systemName: "plus")
+                                            .foregroundColor(Color.black)
+                                            .padding(.trailing)
+                                            .padding(10)
+                                        
+                                    }
+                                }
+                                
+                            }
+                        }
+                        
+                    }
+                    Spacer()
+                    
+                    // Add Button
+                    Button(action: {
+                        // Handle add action
+                        if !editdata.Name.isEmpty{
+                            Context.insert(editdata)
+                            dismiss()
+                            }
+                        
+                        
+                        
+                    }) {
+                        Text("Add")
+                            .padding()
+                            .frame(width: 155, height: 48)
+                            .background(Color.gray.opacity(0.15))
+                            .cornerRadius(15)
+                            .padding(.bottom)
+                    }
+                }
+                    .padding()
+                }//input vstack end
+            .navigationTitle("Edit")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar{
+                ToolbarItemGroup(placement: .topBarTrailing){
+                    Button("Cancel"){dismiss()}
+                        .padding(.top)
+                        .padding(.horizontal)
+                }
+            }//tool bar
+        }
+    }//body
+}
 struct NewItem: View {
     //access the database
     @Environment(\.dismiss) var dismiss
@@ -394,3 +596,4 @@ struct NewItem: View {
         }
     }//body
 }//main sruct
+
