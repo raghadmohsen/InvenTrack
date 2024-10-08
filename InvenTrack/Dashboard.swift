@@ -4,96 +4,84 @@
 //
 //  Created by Raghad on 08/10/2024.
 //
-
 import SwiftUI
 import SwiftData
 
-
-struct Dashboard: View{
-    
-   
+struct Dashboard: View {
     @Query(sort: \DataItem.id) var dataitem: [DataItem]
     @Environment(\.modelContext) private var Context
     @State private var isShowingItemSheet = false
     @State private var itemToEdit: DataItem?
-    
-    
+    @State private var InStock: Int = 0
+    @State private var LowStock: Int = 0
+    @State private var OutOfStock: Int = 0
+  
     var body: some View {
-        NavigationStack{
-            
-                VStack {
-                    
-                    HStack {
-                        NavigationLink(destination: InStocks()) {
-                            
-                            VStack(spacing: 10) {
-                                
-                                Text("In stock")
-                                    .font(.system(size: 13))
+        NavigationStack {
+            VStack {
+                
+                HStack {
+                    NavigationLink(destination: InStocks()) {
+                        VStack(spacing: 10) {
+                            Text("In stock")
+                                .font(.system(size: 13))
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                            HStack {
+                                Text("\(InStock)")
                                     .fontWeight(.bold)
                                     .foregroundColor(.white)
-                                
-                                HStack {
-                                    Text("9")
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                    
-                                    Text(Image(systemName: "circle.fill"))
-                                        .foregroundColor(.green)
-                                    
-                                    
-                                    .padding(.leading) } }
-                            
-                            .frame(width: 80, height: 30)
-                            .padding(20)
-                            .background(Color.green1)
-                            .cornerRadius(15)
-                        }
-                        NavigationLink(destination: LowStocks()) {
-                            VStack(spacing: 10) {
-                                
-                                Text("Low stock")
-                                    .font(.system(size: 13))
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.white)
-                                
-                                HStack {
-                                    Text("5")
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                    
-                                    Text(Image(systemName: "circle.lefthalf.filled"))
-                                        .foregroundColor(.orange)
-                                    
-                                    .padding(.leading) } }
-                            
-                            .frame(width: 80, height: 30)
-                            .padding(20)
-                            .background(Color.orange1)
-                            .cornerRadius(15)
-                        }
-                        NavigationLink(destination: OutOfStocks()) {
-                            VStack(spacing: 10) {
-                                
-                                Text("Out of stock")
-                                    .font(.system(size: 13))
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.white)
-                                
-                                HStack {
-                                    Text("3")
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                    Text(Image(systemName: "minus.circle.fill"))
-                                        .foregroundColor(.red)
-                                    
-                                    .padding(.leading) }
+                                Text(Image(systemName: "circle.fill"))
+                                    .foregroundColor(.green)
+                                    .padding(.leading)
                             }
-                            
-                            .frame(width: 80, height: 30)
-                            .padding(20)
-                            .background(Color.red1)
-                            .cornerRadius(15)
+                        }
+                        .frame(width: 80, height: 30)
+                        .padding(20)
+                        .background(Color.green1)
+                        .cornerRadius(15)
+                    }
+
+                    NavigationLink(destination: LowStocks()) {
+                        VStack(spacing: 10) {
+                            Text("Low stock")
+                                .font(.system(size: 13))
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                            HStack {
+                                Text("\(LowStock)")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                                Text(Image(systemName: "circle.lefthalf.filled"))
+                                    .foregroundColor(.orange)
+                                    .padding(.leading)
+                            }
+                        }
+                        .frame(width: 80, height: 30)
+                        .padding(20)
+                        .background(Color.orange1)
+                        .cornerRadius(15)
+                    }
+
+                    NavigationLink(destination: OutOfStocks()) {
+                        VStack(spacing: 10) {
+                            Text("Out of stock")
+                                .font(.system(size: 13))
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                            HStack {
+                                Text("\(OutOfStock)")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                                Text(Image(systemName: "minus.circle.fill"))
+                                    .foregroundColor(.red)
+                                    .padding(.leading)
+                            }
+                        }
+                        .frame(width: 80, height: 30)
+                        .padding(20)
+                        .background(Color.red1)
+                        .cornerRadius(15)
                         }
                     }
                     //                    .padding()
@@ -149,8 +137,19 @@ struct Dashboard: View{
         }//nav
         
     }//body
-}// main struct
+    private func CountInStock() -> Int{
+        return dataitem.filter {$0.Quantity > $0.MinQuantity }.count
+       }
     
+    private func CountLowStock() -> Int {
+        return dataitem.filter { $0.Quantity >= $0.MinQuantity }.count
+       }
+    
+    private func CountOutOfStock() -> Int {
+        return dataitem.filter { $0.Quantity == 0 }.count
+       }
+}// main struct
+
     
 struct itemcell: View {
     let items: DataItem
@@ -187,7 +186,8 @@ struct itemcell: View {
         }
     }
 }
-    
+
+
 
 
 
