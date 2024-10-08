@@ -11,14 +11,10 @@
 //
 //  Created by Raghad on 08/10/2024.
 //
-
 import SwiftUI
 import SwiftData
 
-
-struct Dashboard: View{
-    
-   
+struct Dashboard: View {
     @Query(sort: \DataItem.id) var dataitem: [DataItem]
     @Environment(\.modelContext) private var Context
     @State private var isShowingItemSheet = false
@@ -167,8 +163,19 @@ struct Dashboard: View{
         }//nav
         
     }//body
-}// main struct
+    private func CountInStock() -> Int{
+        return dataitem.filter {$0.Quantity > $0.MinQuantity }.count
+       }
     
+    private func CountLowStock() -> Int {
+        return dataitem.filter { $0.Quantity >= $0.MinQuantity }.count
+       }
+    
+    private func CountOutOfStock() -> Int {
+        return dataitem.filter { $0.Quantity == 0 }.count
+       }
+}// main struct
+
     
 struct itemcell: View {
     let items: DataItem
