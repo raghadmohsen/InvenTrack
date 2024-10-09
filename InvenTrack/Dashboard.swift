@@ -19,6 +19,7 @@ struct Dashboard: View {
     @Environment(\.modelContext) private var Context
     @State private var isShowingItemSheet = false
     @State private var itemsToEdit : DataItem?
+    
     var body: some View {
         
         
@@ -37,7 +38,7 @@ struct Dashboard: View {
                                     .foregroundColor(.white)
                                 
                                 HStack {
-                                    Text("9")
+                                    Text("\(CountInStock())")
                                         .fontWeight(.bold)
                                         .foregroundColor(.white)
                                     
@@ -61,7 +62,7 @@ struct Dashboard: View {
                                     .foregroundColor(.white)
                                 
                                 HStack {
-                                    Text("5")
+                                    Text("\(CountLowStock())")
                                         .fontWeight(.bold)
                                         .foregroundColor(.white)
                                     
@@ -84,7 +85,7 @@ struct Dashboard: View {
                                     .foregroundColor(.white)
                                 
                                 HStack {
-                                    Text("3")
+                                    Text("\(CountOutOfStock())")
                                         .fontWeight(.bold)
                                         .foregroundColor(.white)
                                     Text(Image(systemName: "minus.circle.fill"))
