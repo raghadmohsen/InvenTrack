@@ -107,10 +107,10 @@ struct Dashboard: View {
                 
             List{
                 Section{
-                    ForEach(dataitem) { item in
-                        itemcell(items: item)
+                    ForEach(dataitem) { items in
+                        itemcell(items: items)
                             .onTapGesture {
-                                itemsToEdit = item
+                                itemsToEdit = items
                             }
                     }
                     
@@ -127,11 +127,10 @@ struct Dashboard: View {
             .navigationTitle("Dashboard")
             .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $isShowingItemSheet){NewItem()}
-            .sheet(item: $itemsToEdit){item in
-                updateItem(editdata:item)
-                
+            .sheet(item: $itemsToEdit ){item in
+               updateItem(editdata: item)
             }
-            //{
+//{
 //
 //                updateItem(dismiss:DataItem(backingData: selectedItem as! BackingData) , editdata: DataItem(backingData: selectedItem as! BackingData))
 //
@@ -169,7 +168,7 @@ struct Dashboard: View {
        }
     
     private func CountLowStock() -> Int {
-        return dataitem.filter { $0.Quantity >= $0.MinQuantity }.count
+        return dataitem.filter { $0.Quantity <= $0.MinQuantity }.count
        }
     
     private func CountOutOfStock() -> Int {
@@ -222,9 +221,10 @@ struct itemcell: View {
 struct updateItem : View{
     //access the database
     
-    @Bindable var editdata: DataItem
+
     @Environment(\.dismiss) var dismiss
-    @Environment(\.modelContext) private var Context
+    @Bindable var editdata: DataItem
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -378,13 +378,7 @@ struct updateItem : View{
                     // Add Button
                     Button(action: {
                         // Handle add action
-                        if !editdata.Name.isEmpty{
-                            Context.insert(editdata)
-                            dismiss()
-                            }
-                        
-                        
-                        
+                        dismiss()
                     }) {
                         Text("Add")
                             .padding()
