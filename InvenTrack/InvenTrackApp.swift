@@ -13,7 +13,7 @@ struct InvenTrackApp: App {
     var body: some Scene {
         WindowGroup {
          
-            Dashboard()
+            DashboardView()
             
         }
     .modelContainer(for: [DataItem.self])
