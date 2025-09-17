@@ -10,11 +10,12 @@ import SwiftData
 
 @main
 struct InvenTrackApp: App {
+    @StateObject private var router = Router()
+
     var body: some Scene {
         WindowGroup {
-         
-            DashboardView()
-            
+            ContentView()
+                .environmentObject(router)
         }
     .modelContainer(for: [DataItem.self])
     }

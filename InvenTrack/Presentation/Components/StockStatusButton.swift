@@ -9,10 +9,9 @@ import Foundation
 import SwiftUI
 
 
-struct StockStatusButton<Destination: View>: View {
+struct StockStatusButton: View {
     let status: StockStatus
     let count: Int
-    let destination: Destination
     
     private var title: String {
         switch status {
@@ -47,7 +46,6 @@ struct StockStatusButton<Destination: View>: View {
     }
     
     var body: some View {
-        NavigationLink(destination: destination) {
             VStack(spacing: 10) {
                 Text(title)
                     .font(.system(size: 13))
@@ -68,7 +66,6 @@ struct StockStatusButton<Destination: View>: View {
             .padding(20)
             .background(color)
             .cornerRadius(15)
-        }
     }
 }
 

@@ -11,11 +11,8 @@ import SwiftUI
 struct ItemCardView: View {
     var items: DataItem
     var body: some View {
-        
-        VStack {
-            VStack(spacing: 20) {
-                HStack {
-                    
+
+        HStack {
                     VStack(alignment: .leading) {
                         Text(items.name)
                             .font(.system(size: 17))
@@ -31,14 +28,7 @@ struct ItemCardView: View {
                             .foregroundColor(.dgray)
                     }
                     
-                    Spacer()
-                    
-                    
+                   Spacer()
                 }
-                .padding()
-                .frame(width: 370)
-                .cornerRadius(30)
-            }
-        }
     }
 }

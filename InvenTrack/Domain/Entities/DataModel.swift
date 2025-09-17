@@ -8,7 +8,8 @@
 import Foundation
 import SwiftData
     
-@Model class DataItem {
+@Model
+class DataItem {
     
     @Attribute(.unique) var id : String
     var name : String
@@ -24,10 +25,8 @@ import SwiftData
            if quantity == 0 { return .outOfStock }
            if quantity <= minQuantity { return .lowStock }
            return .inStock
-       }
-   
-    //to pass in the name
-    init(name: String ,desc: String, category : String , quantity : Int , minquantity : Int) {
+    }
+       init(name: String ,desc: String, category : String , quantity : Int , minquantity : Int) {
         id = UUID().uuidString
         self.name = name
         self.desc = desc

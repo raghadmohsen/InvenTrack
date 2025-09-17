@@ -7,12 +7,10 @@
 
 import Foundation
 
-class DashboardViewModel: ObservableObject {
-    @Published var items: [DataItem] = []
-
-    func count(for status: StockStatus) -> Int {
+@MainActor
+final class DashboardViewModel: ObservableObject {
+    func count(for status: StockStatus, in items: [DataItem]) -> Int {
         items.filter { $0.stockStatus == status }.count
     }
 }
-
 
