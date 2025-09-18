@@ -45,27 +45,28 @@ struct ContentView: View {
         NavigationStack(path: $router.path) {
             DashboardView(onAddItem: { sheet = .newItemview },
                           onEditItem: { item in sheet = .editItemview(item) })
-        }
-        .navigationDestination(for: AppRoute.self) { route in
-            switch route {
-            case .dashboard:
-                DashboardView(onAddItem: { sheet = .newItemview },
-                              onEditItem: { item in sheet = .editItemview(item) })
-            case .stockList(let status):
-                StockListView(filterStatus: status)
+            
+            .navigationDestination(for: AppRoute.self) { route in
+                switch route {
+                case .dashboard:
+                    DashboardView(onAddItem: { sheet = .newItemview },
+                                  onEditItem: { item in sheet = .editItemview(item) })
+                case .stockList(let status):
+                    StockListView(filterStatus: status)
+                }
             }
-        }
-        
-        .sheet(item: $sheet) { route in
-            switch route {
-            case .newItemview:
-                NewItemView()
-                    .navigationTitle("New Item")
-                    .navigationBarTitleDisplayMode(.large)
-            case .editItemview(let item):
-                UpdateItem(editdata: item)
-                    .navigationTitle("Edit Item")
-                    .navigationBarTitleDisplayMode(.large)
+            
+            .sheet(item: $sheet) { route in
+                switch route {
+                case .newItemview:
+                    NewItemView()
+                        .navigationTitle("New Item")
+                        .navigationBarTitleDisplayMode(.large)
+                case .editItemview(let item):
+                    UpdateItem(editdata: item)
+                        .navigationTitle("Edit Item")
+                        .navigationBarTitleDisplayMode(.large)
+                }
             }
         }
     }
